@@ -1,0 +1,51 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    tools:context="com.shichuang.ahomet.fragment.NavFragment">
+
+    <com.shichuang.ahomet.view.NavigationButton
+        android:id="@+id/nav_item_home"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp" />
+
+    <com.shichuang.ahomet.view.NavigationButton
+        android:id="@+id/nav_item_nearby"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp" />
+
+    <ImageView
+        android:id="@+id/nav_item_dynamic_pub"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:contentDescription="@null"
+        android:padding="2dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_nav_add_selector" />
+
+    <com.shichuang.ahomet.view.NavigationButton
+        android:id="@+id/nav_item_dynamic"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp" />
+
+    <com.shichuang.ahomet.view.NavigationButton
+        android:id="@+id/nav_item_mine"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp" />
+</LinearLayout>

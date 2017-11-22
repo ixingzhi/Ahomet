@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Ahomet</string>
+    
+    <string name="main_tab_name_home">首页</string>
+    <string name="main_tab_name_nearby">附近</string>
+    <string name="main_tab_name_dynamic">动态</string>
+    <string name="main_tab_name_mine">我的</string>
 </resources>
