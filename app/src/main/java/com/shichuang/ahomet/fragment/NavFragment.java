@@ -124,7 +124,6 @@ public class NavFragment extends BaseFragment implements View.OnClickListener {
             }
             oldNavButton.setSelected(false);
         }
-        Log.e("test","4");
         newNavButton.setSelected(true);
         doTabChanged(oldNavButton, newNavButton);
         mCurrentNavButton = newNavButton;
