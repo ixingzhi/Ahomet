@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 
+import com.shichuang.open.R;
+
 import java.util.List;
 import java.util.Stack;
 
@@ -206,6 +208,7 @@ public class RxActivityTool {
     public static void skipActivity(Context context, Class<?> goal) {
         Intent intent = new Intent(context, goal);
         context.startActivity(intent);
+        ((Activity) context).overridePendingTransition(R.anim.zoom_center_in,0);
     }
 
     /**
@@ -218,6 +221,7 @@ public class RxActivityTool {
         Intent intent = new Intent(context, goal);
         intent.putExtras(bundle);
         context.startActivity(intent);
+        ((Activity) context).overridePendingTransition(R.anim.zoom_center_in,0);
     }
 
     public static void skipActivityForResult(Activity context, Class<?> goal, int requestCode) {
@@ -229,6 +233,14 @@ public class RxActivityTool {
         Intent intent = new Intent(context, goal);
         intent.putExtras(bundle);
         context.startActivityForResult(intent, requestCode);
+    }
+
+    /**
+     * Activity Finish
+     */
+    public static void finish(Context context){
+        ((Activity) context).finish();
+        ((Activity) context).overridePendingTransition(0,R.anim.zoom_center_out);
     }
 
     /**

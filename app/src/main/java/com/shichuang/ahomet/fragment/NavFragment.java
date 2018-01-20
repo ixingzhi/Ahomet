@@ -49,7 +49,7 @@ public class NavFragment extends BaseFragment implements View.OnClickListener {
                 HomeFragment.class);
         mNavNearby.init(R.drawable.tab_icon_new,
                 R.string.main_tab_name_nearby,
-                NearbyFragment.class);
+                HomeFragment.class);
         mNavDynamic.init(R.drawable.tab_icon_new,
                 R.string.main_tab_name_dynamic,
                 HomeFragment.class);

@@ -10,8 +10,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.shichuang.open.tool.RxToastTool;
+import com.shichuang.open.widget.RxEmptyLayout;
 
 /**
  * Created by Administrator on 2017/10/26.
@@ -94,4 +96,5 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
             }
         }).start();
     }
+
 }

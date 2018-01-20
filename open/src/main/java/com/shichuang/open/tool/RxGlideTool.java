@@ -34,7 +34,7 @@ public class RxGlideTool {
      */
     public static void loadImageView(Context mContext, String path, ImageView mImageView) {
         RequestOptions options = new RequestOptions();
-        options.error(R.drawable.ic_default_image);
+        options.error(R.drawable.biz_ic_default_image);
         Glide.with(mContext).load(path).into(mImageView);
     }
 

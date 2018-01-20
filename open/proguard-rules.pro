@@ -20,23 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-#Glide
--keep public class * implements com.bumptech.glide.module.GlideModule
--keep public class * extends com.bumptech.glide.module.AppGlideModule
--keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
-  **[] $VALUES;
-  public *;
-}
 
-# for DexGuard only
--keepresourcexmlelements manifest/application/meta-data@value=GlideModule
-
-# OKGO start
-# okhttp
--dontwarn okhttp3.**
--keep class okhttp3.**{*;}
-
-# okio
--dontwarn okio.**
--keep class okio.**{*;}
-# OKGO end

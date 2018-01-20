@@ -153,6 +153,23 @@ public class RxFileTool {
             return false;
     }
 
+    public static Uri getMediaUriFromPath(Context context, String path) {
+        Uri mediaUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        Cursor cursor = context.getContentResolver().query(mediaUri,
+                null,
+                MediaStore.Images.Media.DISPLAY_NAME + "= ?",
+                new String[] {path.substring(path.lastIndexOf("/") + 1)},
+                null);
+
+        Uri uri = null;
+        if(cursor.moveToFirst()) {
+            uri = ContentUris.withAppendedId(mediaUri,
+                    cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID)));
+        }
+        cursor.close();
+        return uri;
+    }
+
     /**
      * 文件或者文件夹是否存在.
      */
@@ -283,6 +300,16 @@ public class RxFileTool {
      */
     public static boolean cleanExternalCache(Context context) {
         return RxFileTool.isSDCardEnable() && RxFileTool.deleteFilesInDir(context.getExternalCacheDir());
+    }
+
+    /**
+     * 获取外部缓存文件
+     * @param context
+     * @return
+     */
+    @TargetApi(8)
+    public static File getExternalCacheDir(Context context) {
+        return context.getExternalCacheDir();
     }
 
     /**
@@ -431,6 +458,56 @@ public class RxFileTool {
         } else {
             return 0;
         }
+    }
+
+    /**
+     * 转换文件大小
+     *
+     * @param fileS
+     * @return B/KB/MB/GB
+     */
+    public static String formatFileSize(long fileS) {
+        java.text.DecimalFormat df = new java.text.DecimalFormat("#.00");
+        String fileSizeString = "";
+        if (fileS < 1024) {
+            fileSizeString = df.format((double) fileS) + "B";
+        } else if (fileS < 1048576) {
+            fileSizeString = df.format((double) fileS / 1024) + "KB";
+        } else if (fileS < 1073741824) {
+            fileSizeString = df.format((double) fileS / 1048576) + "MB";
+        } else {
+            fileSizeString = df.format((double) fileS / 1073741824) + "G";
+        }
+        return fileSizeString;
+    }
+
+    /**
+     * 获取目录文件大小
+     *
+     * @param dir
+     * @return
+     */
+    public static long getDirSize(File dir) {
+        if (dir == null) {
+            return 0;
+        }
+        if (!dir.isDirectory()) {
+            return 0;
+        }
+        long dirSize = 0;
+        File[] files = dir.listFiles();
+        if (files != null) {
+
+            for (File file : files) {
+                if (file.isFile()) {
+                    dirSize += file.length();
+                } else if (file.isDirectory()) {
+                    dirSize += file.length();
+                    dirSize += getDirSize(file); // 递归调用继续统计
+                }
+            }
+        }
+        return dirSize;
     }
 
     /**

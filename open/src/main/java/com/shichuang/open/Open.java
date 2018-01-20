@@ -1,5 +1,8 @@
 package com.shichuang.open;
 import android.content.Context;
+import android.util.Log;
+
+import com.tencent.smtt.sdk.QbSdk;
 
 /**
  * Created by Administrator on 2017/11/22.

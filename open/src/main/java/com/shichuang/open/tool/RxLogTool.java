@@ -7,7 +7,7 @@ import android.util.Log;
  */
 public class RxLogTool {
     private static Boolean LOG_SWITCH = true; // 日志文件总开关
-    private static String LOG_TAG = "TAG"; // 默认的tag
+    private static String LOG_TAG = "PARK_LOG"; // 默认的tag
     private static char LOG_TYPE = 'v';// 输入日志类型，v代表输出所有信息,w则只输出警告...
 
     /****************************

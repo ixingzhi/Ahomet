@@ -3,8 +3,14 @@ package com.shichuang.ahomet;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
+import com.sdu.didi.openapi.DiDiWebActivity;
 import com.shichuang.open.Open;
 import com.shichuang.open.base.BaseApplication;
+import com.umeng.socialize.Config;
+import com.umeng.socialize.PlatformConfig;
+import com.umeng.socialize.UMShareAPI;
+
+import cn.jpush.android.api.JPushInterface;
 
 /**
  * Created by Administrator on 2017/11/22.
@@ -17,6 +23,9 @@ public class AhometApplication extends BaseApplication {
         super.onCreate();
         Open.getInstance().init(this);     // 初始化Open
         initOKGO();
+        initPlatformConfig();
+        initDiDi();
+        initJpush();
     }
 
     private void initOKGO() {
@@ -28,4 +37,26 @@ public class AhometApplication extends BaseApplication {
 //                .addCommonHeaders(headers)                        //全局公共头
 //                .addCommonParams(params);                         //全局公共参数
     }
+
+    private void initPlatformConfig() {
+        Config.DEBUG = true;
+        UMShareAPI.get(this);
+        PlatformConfig.setWeixin("wx1773b107a60f360b", "a9615d31c1f66ab3e670b17338b2cb58");
+        PlatformConfig.setQQZone("1105543666", "");
+        PlatformConfig.setSinaWeibo("2006352818", "cc508e298010aad2592c6cf10012da87", "http://www.creatrue.net");
+    }
+
+    private void initDiDi() {
+        DiDiWebActivity.registerApp(this, "didi6348486261537437306D71735463534E",
+                "8ac491819e8a81b866e7331f44af7f8f");
+    }
+
+
+    private void initJpush() {
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
+    }
+
+
+
 }

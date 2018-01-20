@@ -7,11 +7,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.lzy.okgo.OkGo;
 import com.shichuang.open.tool.RxActivityTool;
+import com.shichuang.open.tool.RxScreenTool;
 import com.shichuang.open.tool.RxToastTool;
-import com.shichuang.open.view.RxLoadDialog;
+import com.shichuang.open.widget.RxEmptyLayout;
+import com.shichuang.open.widget.RxLoadDialog;
 
 
 /**
@@ -39,9 +44,14 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     protected void onDestroy() {
         super.onDestroy();
         OkGo.getInstance().cancelTag(mContext);
+        mContentView = null;
     }
 
-    protected void showToast(final String msg) {
+    /**
+     * Toast
+     * @param msg
+     */
+    public void showToast(final String msg) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -51,9 +61,12 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         }).start();
     }
 
-    protected RxLoadDialog mLoadDialog;
+    /**
+     * 加载框，适用于接口提交
+     */
+    public RxLoadDialog mLoadDialog;
 
-    protected void showLoading() {
+    public void showLoading() {
         if (!isFinishing()) {
             dismissLoading();
             mLoadDialog = new RxLoadDialog(mContext);
@@ -61,7 +74,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         }
     }
 
-    protected void dismissLoading() {
+    public void dismissLoading() {
         try {
             if (!isFinishing()
                     && mLoadDialog != null
@@ -71,5 +84,12 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        RxActivityTool.finish(this);
     }
 }

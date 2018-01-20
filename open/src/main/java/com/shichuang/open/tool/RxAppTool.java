@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Looper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,6 +31,15 @@ public class RxAppTool {
      */
     public static void installApp(Context context, String filePath) {
         context.startActivity(RxIntentTool.getInstallAppIntent(context, filePath));
+    }
+
+    /**
+     * 判断当前是不是主线程
+     *
+     * @return
+     */
+    public static boolean isMainThread() {
+        return Looper.getMainLooper() == Looper.myLooper();
     }
 
     /**
@@ -583,6 +593,17 @@ public class RxAppTool {
             }
         }
         return false;
+    }
+
+    /**
+     * 判断当前版本是否兼容目标版本的方法
+     *
+     * @param VersionCode
+     * @return
+     */
+    public static boolean isMethodsCompat(int VersionCode) {
+        int currentVersion = android.os.Build.VERSION.SDK_INT;
+        return currentVersion >= VersionCode;
     }
 
     /**

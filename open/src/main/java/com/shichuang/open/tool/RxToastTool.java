@@ -208,9 +208,9 @@ public class RxToastTool {
                 cancel();
                 sToast = Toast.makeText(Open.getInstance().getContext(), text, duration);
                 // solve the font of toast
-                TextView tvMessage = (TextView) sToast.getView().findViewById(android.R.id.message);
-                TextViewCompat.setTextAppearance(tvMessage, android.R.style.TextAppearance);
-                tvMessage.setTextColor(msgColor);
+//                TextView tvMessage = (TextView) sToast.getView().findViewById(android.R.id.message);
+//                TextViewCompat.setTextAppearance(tvMessage, android.R.style.TextAppearance);
+//                tvMessage.setTextColor(msgColor);
                 setBgAndGravity();
                 sToast.show();
             }
@@ -239,7 +239,7 @@ public class RxToastTool {
             Drawable background = toastView.getBackground();
             background.setColorFilter(new PorterDuffColorFilter(bgColor, PorterDuff.Mode.SRC_IN));
         }
-        sToast.setGravity(gravity, xOffset, yOffset);
+        //sToast.setGravity(gravity, xOffset, yOffset);
     }
 
     private static View getView(@LayoutRes final int layoutId) {

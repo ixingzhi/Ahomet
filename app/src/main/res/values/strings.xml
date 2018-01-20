@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Ahomet</string>
-    
+    <string name="app_name">互联家Ahomet</string>
+
     <string name="main_tab_name_home">首页</string>
     <string name="main_tab_name_nearby">附近</string>
     <string name="main_tab_name_dynamic">动态</string>
@@ -8,4 +8,6 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="network_error">网络错误，稍后再试</string>
 </resources>

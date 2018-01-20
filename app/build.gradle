@@ -10,13 +10,46 @@ android {
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        ndk { abiFilters "armeabi", "armeabi-v7a", "arm64-v8a"}
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+    sourceSets
+            {
+                main {
+                    jniLibs.srcDirs = ['src/main/jniLibs']
+                }
+            }
+
+    signingConfigs {
+        appkey {
+            keyAlias 'Ahomet'
+            keyPassword '123456'
+            storeFile file('../Ahomet.jks')
+            storePassword '123456'
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+    }
+
+    buildTypes {
+        release {
+            debuggable false
+            minifyEnabled false   // 混淆编译
+            signingConfig signingConfigs.appkey
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            minifyEnabled true   // 混淆编译
+            signingConfig signingConfigs.appkey  // 签名
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // 混淆文件
+        }
+    }
+
 }
 
 dependencies {
@@ -27,4 +60,13 @@ dependencies {
     compile "com.android.support:design:$rootProject.ext.supportVersion"
     testCompile 'junit:junit:4.12'
     compile project(':open')
+    compile(name: 'didi_sdk_for_common_v1.1.0_05_28', ext: 'aar')
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.7'
 }
+
+repositories {
+    flatDir {
+        dirs 'libs'   // aar目录
+    }
+}
+
