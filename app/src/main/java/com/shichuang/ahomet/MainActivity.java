@@ -1,12 +1,17 @@
 package com.shichuang.ahomet;
 
+import android.*;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
@@ -14,20 +19,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 
+import com.baidu.location.BDAbstractLocationListener;
+import com.baidu.location.BDLocation;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.lzy.okgo.OkGo;
 import com.shichuang.ahomet.common.AppUpdateUtils;
+import com.shichuang.ahomet.common.LocationService;
 import com.shichuang.ahomet.common.js.JsDataParse;
 import com.shichuang.ahomet.entify.MessageEvent;
 import com.shichuang.open.base.BaseActivity;
+import com.shichuang.open.common.UserAgentBuilder;
 import com.shichuang.open.tool.RxFileTool;
 import com.shichuang.open.widget.RxEmptyLayout;
 import com.shichuang.open.widget.X5ProgressBarWebView;
 import com.tencent.smtt.sdk.ValueCallback;
 import com.tencent.smtt.sdk.WebChromeClient;
+import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.umeng.socialize.UMShareAPI;
@@ -36,6 +46,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends BaseActivity {
@@ -46,7 +57,15 @@ public class MainActivity extends BaseActivity {
     private boolean firstEnter = true;
     private ValueCallback<Uri> mUploadCallbackBelow;
     private ValueCallback<Uri[]> mUploadCallbackAboveL;
+    private LocationService locationService;
 
+    private String[] needPermissions = {
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,    //通过WiFi或移动基站的方式获取用户错略的经纬度信息，定位精度大概误差在30~1500米
+            android.Manifest.permission.ACCESS_FINE_LOCATION,   //通过GPS芯片接收卫星的定位信息，定位精度达10米以内
+            android.Manifest.permission.READ_PHONE_STATE   //访问电话状态
+    };
+    private static final int PERMISSON_REQUESTCODE = 0;
+    private boolean isNeedCheck = true;
 
     @Override
     public int getLayoutId() {
@@ -86,7 +105,7 @@ public class MainActivity extends BaseActivity {
             }
         });
         mWebView.loadUrl(mUrl);
-
+        initLocation();
         EventBus.getDefault().register(this);
     }
 
@@ -97,6 +116,26 @@ public class MainActivity extends BaseActivity {
     @Override
     public void initData() {
         AppUpdateUtils.getInstance().update(mContext);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isNeedCheck) {
+            checkPermissions(needPermissions);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        locationService.unregisterListener(mListener); //注销掉监听
+        locationService.stop(); //停止定位服务
+        super.onStop();
     }
 
     private class WebClient extends WebViewClient {
@@ -142,6 +181,12 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    private void initLocation() {
+        locationService = ((AhometApplication) getApplication()).locationService;
+        locationService.registerListener(mListener);
+        locationService.setLocationOption(locationService.getDefaultLocationClientOption());
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(MessageEvent event) {
         if (event != null && event.message != null && mWebView != null) {
@@ -150,7 +195,6 @@ public class MainActivity extends BaseActivity {
             Log.d("test", "onEventMainThread:" + event.message);
         }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -233,6 +277,131 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    /*****
+     *
+     * 定位结果回调，重写onReceiveLocation方法，可以直接拷贝如下代码到自己工程中修改
+     */
+    private BDAbstractLocationListener mListener = new BDAbstractLocationListener() {
+
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            // TODO Auto-generated method stub
+            if (null != location && location.getLocType() != BDLocation.TypeServerError) {
+                if (location.getLatitude() != 4.9E-324 && location.getLongitude() != 4.9E-324) {
+                    locationService.stop();
+                    isNeedCheck = false;
+                    Log.i("test", "定位成功");
+                    String longitude = String.valueOf(location.getLongitude());
+                    String latitude = String.valueOf(location.getLatitude());
+                    String province = location.getProvince();
+                    String city = location.getCity();
+                    String district = location.getDistrict();
+                    String addr = location.getAddrStr();
+
+                    StringBuffer sb = new StringBuffer(256);
+                    sb.append(longitude);
+                    sb.append(",");
+                    sb.append(latitude);
+                    sb.append(",");
+                    sb.append(province);
+                    sb.append(",");
+                    sb.append(city);
+                    sb.append(",");
+                    sb.append(district);
+                    sb.append(",");
+                    sb.append(addr);
+
+                    UserAgentBuilder.setAddressInfo(sb.toString());
+                    WebSettings webSettings = mWebView.getSettings();
+                    webSettings.setUserAgentString(webSettings.getUserAgentString() + UserAgentBuilder.ua());
+                }
+            }
+        }
+    };
+
+    private void checkPermissions(String... permissions) {
+        List<String> needRequestPermissonList = findDeniedPermissions(permissions);
+        if (null != needRequestPermissonList
+                && needRequestPermissonList.size() > 0) {
+            ActivityCompat.requestPermissions(this,
+                    needRequestPermissonList.toArray(
+                            new String[needRequestPermissonList.size()]),
+                    PERMISSON_REQUESTCODE);
+        } else {
+            locationService.start();// 定位SDK
+        }
+    }
+
+    /**
+     * 获取权限集中需要申请权限的列表
+     *
+     * @param permissions
+     * @return
+     * @since 2.5.0
+     */
+    private List<String> findDeniedPermissions(String[] permissions) {
+        List<String> needRequestPermissonList = new ArrayList<String>();
+        for (String perm : permissions) {
+            if (ContextCompat.checkSelfPermission(this,
+                    perm) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.shouldShowRequestPermissionRationale(
+                    this, perm)) {
+                needRequestPermissonList.add(perm);
+            }
+        }
+        return needRequestPermissonList;
+    }
+
+    /**
+     * 检测是否说有的权限都已经授权
+     *
+     * @param grantResults
+     * @return
+     * @since 2.5.0
+     */
+    private boolean verifyPermissions(int[] grantResults) {
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] paramArrayOfInt) {
+        if (requestCode == PERMISSON_REQUESTCODE) {
+            if (!verifyPermissions(paramArrayOfInt)) {
+                showMissingPermissionDialog();
+                isNeedCheck = false;
+            }
+        }
+    }
+
+    private void showMissingPermissionDialog() {
+        new AlertDialog.Builder(mContext).setTitle("提示").setMessage("打开定位权限，获取更精确的数据")
+                .setPositiveButton("打开", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        isNeedCheck = true;
+                        startAppSettings();
+                    }
+                })
+                .setNegativeButton("取消", null).create().show();
+    }
+
+    /**
+     * 启动应用的设置
+     *
+     * @since 2.5.0
+     */
+    private void startAppSettings() {
+        Intent intent = new Intent(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.parse("package:" + getPackageName()));
+        startActivity(intent);
+    }
 
     @Override
     public void onBackPressed() {

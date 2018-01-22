@@ -41,6 +41,13 @@ public class SplashActivity extends AppCompatActivity {
         judgeIsLogin();
     }
 
+//    private void checkRuntimePermission() {
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+//            startUp();
+//            return;
+//        }
+//    }
+
     /**
      * 判断是否首次进入App
      *

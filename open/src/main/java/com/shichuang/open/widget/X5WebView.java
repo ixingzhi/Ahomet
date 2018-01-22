@@ -35,6 +35,6 @@ public class X5WebView extends WebView {
         webSettings.setAppCacheEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setUserAgentString(webSettings.getUserAgentString() + UserAgentBuilder.ua());
-        Log.d("test", "UserAgent:" + webSettings.getUserAgentString());
+        Log.i("test", "UserAgentString:" + webSettings.getUserAgentString() + UserAgentBuilder.ua());
     }
 }

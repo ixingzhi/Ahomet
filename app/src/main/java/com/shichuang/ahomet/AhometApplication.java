@@ -1,9 +1,14 @@
 package com.shichuang.ahomet;
 
+import android.app.Service;
+import android.os.Vibrator;
+
+import com.baidu.mapapi.SDKInitializer;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
 import com.sdu.didi.openapi.DiDiWebActivity;
+import com.shichuang.ahomet.common.LocationService;
 import com.shichuang.open.Open;
 import com.shichuang.open.base.BaseApplication;
 import com.umeng.socialize.Config;
@@ -17,6 +22,8 @@ import cn.jpush.android.api.JPushInterface;
  */
 
 public class AhometApplication extends BaseApplication {
+    public LocationService locationService;
+    public Vibrator mVibrator;
 
     @Override
     public void onCreate() {
@@ -26,6 +33,7 @@ public class AhometApplication extends BaseApplication {
         initPlatformConfig();
         initDiDi();
         initJpush();
+        initLocation();
     }
 
     private void initOKGO() {
@@ -57,6 +65,11 @@ public class AhometApplication extends BaseApplication {
         JPushInterface.init(this);
     }
 
+    private void initLocation() {
+        locationService = new LocationService(getApplicationContext());
+        mVibrator = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
+        SDKInitializer.initialize(getApplicationContext());
+    }
 
 
 }

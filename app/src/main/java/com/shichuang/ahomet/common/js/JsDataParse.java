@@ -15,6 +15,7 @@ import com.shichuang.ahomet.entify.MessageEvent;
 import com.shichuang.ahomet.entify.Platform;
 import com.shichuang.ahomet.entify.Share;
 import com.shichuang.ahomet.entify.User;
+import com.shichuang.ahomet.entify.WxPay;
 import com.shichuang.open.tool.RxActivityTool;
 
 import org.greenrobot.eventbus.EventBus;
@@ -34,8 +35,10 @@ public class JsDataParse {
     private static final String QQ_LOGIN = "qq";
     private static final String WECHAT_LOGIN = "weixin";
     private static final String SINA_LOGIN = "sina";
-    // 支付
-    private static final String AIPAY_TYPE = "alipay";
+    // 支付宝支付
+    private static final String ALIPAY_TYPE = "alipay";
+    // 微信支付
+    private static final String WXPAY_TYPE = "wxpay";
     // 分享
     private static final String SHARE_TYPE = "share";
     // 滴滴
@@ -86,12 +89,19 @@ public class JsDataParse {
 
                     break;
             }
-        } else if (platformType.equals(AIPAY_TYPE)) {   // 支付宝支付
+        } else if (platformType.equals(ALIPAY_TYPE)) {   // 支付宝支付
 
             Type type = new TypeToken<JsData<ALiPay>>() {
             }.getType();
             JsData<ALiPay> jsData = Convert.fromJson(tag, type);
             JsALiPay.getInstance().pay(context, jsData.data);
+
+        } else if (platformType.equals(WXPAY_TYPE)) {
+
+            Type type = new TypeToken<JsData<WxPay>>() {
+            }.getType();
+            JsData<WxPay> jsData = Convert.fromJson(tag, type);
+            JsWxPay.getInstance().pay(context, jsData.data);
 
         } else if (platformType.equals(SHARE_TYPE)) {    // 分享
 
