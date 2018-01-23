@@ -10,8 +10,9 @@ android {
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-        ndk { abiFilters "armeabi", "armeabi-v7a", "arm64-v8a"}
+        multiDexEnabled true
+        //ndk { abiFilters "armeabi", "armeabi-v7a", "arm64-v8a"}
+        ndk { abiFilters "armeabi", "armeabi-v7a"}
     }
 
     sourceSets
@@ -58,6 +59,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:$rootProject.ext.supportVersion"
     //noinspection GradleDependency
     compile "com.android.support:design:$rootProject.ext.supportVersion"
+    compile 'com.android.support:multidex:1.0.1'
     testCompile 'junit:junit:4.12'
     compile project(':open')
     compile(name: 'didi_sdk_for_common_v1.1.0_05_28', ext: 'aar')

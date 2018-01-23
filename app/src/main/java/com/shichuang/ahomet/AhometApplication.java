@@ -1,7 +1,9 @@
 package com.shichuang.ahomet;
 
 import android.app.Service;
+import android.content.Context;
 import android.os.Vibrator;
+import android.support.multidex.MultiDex;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.lzy.okgo.OkGo;
@@ -24,6 +26,12 @@ import cn.jpush.android.api.JPushInterface;
 public class AhometApplication extends BaseApplication {
     public LocationService locationService;
     public Vibrator mVibrator;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     @Override
     public void onCreate() {

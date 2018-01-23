@@ -87,7 +87,7 @@ public class JsWxPay {
                 data.getPackageValue(),
                 data.getNonceStr(),
                 data.getTimeStamp(),
-                "",
+                data.getSign(),
                 onRequestListener);
     }
 
