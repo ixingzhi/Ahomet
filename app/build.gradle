@@ -3,6 +3,8 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
+    aaptOptions.cruncherEnabled = false  //取消掉对.9图片的安全检查
+    aaptOptions.useNewCruncher = false
     defaultConfig {
         applicationId rootProject.ext.applicationId
         minSdkVersion rootProject.ext.minSdkVersion
@@ -44,7 +46,7 @@ android {
         }
         debug {
             debuggable true
-            minifyEnabled true   // 混淆编译
+            minifyEnabled false   // 混淆编译
             signingConfig signingConfigs.appkey  // 签名
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             // 混淆文件

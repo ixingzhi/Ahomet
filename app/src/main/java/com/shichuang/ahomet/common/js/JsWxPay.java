@@ -1,6 +1,7 @@
 package com.shichuang.ahomet.common.js;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
@@ -36,10 +37,10 @@ public class JsWxPay {
 
     public void pay(Context context, WxPay wxPay) {
         this.mContext = context;
-        String orderNo = wxPay.getOrderNo();
+        String orderNo = wxPay.getOrderNO();
         String price = wxPay.getPrice();
         String title = wxPay.getTitle();
-
+        Log.d("test",orderNo+"   "+price+"    "+title);
         OkGo.<AMBaseDto<WxMakeOrder>>post(Constants.wxMakeOrderUrl)
                 //.cacheMode(CacheMode.FIRST_CACHE_THEN_REQUEST)  //缓存模式先使用缓存,然后使用网络数据
                 .tag(context)

@@ -190,7 +190,7 @@ public class MainActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(MessageEvent event) {
         if (event != null && event.message != null && mWebView != null) {
-            mWebView.clearHistory();
+            //mWebView.clearHistory();
             mWebView.loadUrl(event.message);
             Log.d("test", "onEventMainThread:" + event.message);
         }
@@ -200,22 +200,25 @@ public class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);//完成回调
-        if (requestCode == PictureConfig.CHOOSE_REQUEST && resultCode == RESULT_OK) {
-            List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
-            if (selectList != null && selectList.size() > 0) {
-                //针对5.0以上, 以下区分处理方法
-                Uri uri = RxFileTool.getMediaUriFromPath(mContext, selectList.get(0).getPath());
-                if (mUploadCallbackBelow != null) {
-                    chooseBelow(uri);
-                } else if (mUploadCallbackAboveL != null) {
-                    chooseAbove(uri);
-                } else {
-                    showToast("发生错误");
+        if (requestCode == PictureConfig.CHOOSE_REQUEST) {
+            if (resultCode == RESULT_OK) {   // 有选择结果
+                List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
+                if (selectList != null && selectList.size() > 0) {
+                    //针对5.0以上, 以下区分处理方法
+                    Uri uri = RxFileTool.getMediaUriFromPath(mContext, selectList.get(0).getPath());
+                    if (mUploadCallbackBelow != null) {
+                        chooseBelow(uri);
+                    } else if (mUploadCallbackAboveL != null) {
+                        chooseAbove(uri);
+                    } else {
+                        showToast("发生错误");
+                    }
                 }
+            } else {  // 没有选择结果，关闭回调
+                cancelFilePathCallback();
             }
         }
     }
-
 
     private void takePhoto() {
         String[] items = {"从相册选择", "取消"};
@@ -373,14 +376,20 @@ public class MainActivity extends BaseActivity {
                                            String[] permissions, int[] paramArrayOfInt) {
         if (requestCode == PERMISSON_REQUESTCODE) {
             if (!verifyPermissions(paramArrayOfInt)) {
-                showMissingPermissionDialog();
+                showMissingPermissionDialog("打开定位权限，获取更精确的数据");
                 isNeedCheck = false;
+            }
+        } else if (requestCode == AppUpdateUtils.PERMISSON_REQUESTCODE) {
+            if (paramArrayOfInt[0] != PackageManager.PERMISSION_GRANTED) {
+                showMissingPermissionDialog("请打开读写手机存储权限");
+            } else {
+                AppUpdateUtils.getInstance().startDownOnGetPermission();
             }
         }
     }
 
-    private void showMissingPermissionDialog() {
-        new AlertDialog.Builder(mContext).setTitle("提示").setMessage("打开定位权限，获取更精确的数据")
+    private void showMissingPermissionDialog(String message) {
+        new AlertDialog.Builder(mContext).setTitle("提示").setMessage(message)
                 .setPositiveButton("打开", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

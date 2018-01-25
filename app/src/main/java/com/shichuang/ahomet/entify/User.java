@@ -6,6 +6,7 @@ package com.shichuang.ahomet.entify;
 
 public class User {
     private String token;
+    private String phone;
 
     public String getToken() {
         return token;
@@ -13,5 +14,13 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

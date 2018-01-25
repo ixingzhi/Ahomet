@@ -139,6 +139,16 @@
             android:theme="@android:style/Theme.NoTitleBar" />
         <!-- App更新 -->
         <service android:name=".service.AppUpdateService" />
+<!--        &lt;!&ndash;自动更新&ndash;&gt;
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.shichuang.governmentaffairsoa.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>-->
         <!-- ***********************************极光推送配置开始***********************************-->
 
         <!-- Rich push 核心功能 since 2.0.6-->
@@ -257,7 +267,7 @@
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.provider"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

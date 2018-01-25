@@ -1,6 +1,7 @@
 package com.shichuang.ahomet.common.js;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 import com.sdu.didi.openapi.DiDiWebActivity;
@@ -64,6 +65,7 @@ public class JsDataParse {
             JSONObject jsonObject = new JSONObject(tag);
             platformType = jsonObject.getString("type");
         } catch (JSONException e) {
+            Log.d("test",e.getMessage());
             e.printStackTrace();
         }
         if ("".equals(platformType)) {
@@ -96,7 +98,7 @@ public class JsDataParse {
             JsData<ALiPay> jsData = Convert.fromJson(tag, type);
             JsALiPay.getInstance().pay(context, jsData.data);
 
-        } else if (platformType.equals(WXPAY_TYPE)) {
+        } else if (platformType.equals(WXPAY_TYPE)) {  // 微信支付
 
             Type type = new TypeToken<JsData<WxPay>>() {
             }.getType();
@@ -132,7 +134,7 @@ public class JsDataParse {
             if (jsData != null && jsData.data != null) {
                 UserCache.update(context, jsData.data);
                 // 设置极光推送别名
-                JpushUtils.setJpushAlias(context, String.valueOf("1111"));
+                JpushUtils.setJpushAlias(context, jsData.data.getPhone());
             }
 
         } else if (platformType.equals(CALL_TYPE)) {  // 拨打电话

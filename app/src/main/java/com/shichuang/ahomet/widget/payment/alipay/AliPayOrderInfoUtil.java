@@ -65,7 +65,7 @@ public class AliPayOrderInfoUtil {
      * @param app_id target_id
      * @return
      */
-    public static Map<String, String> buildOrderParamMapV2(String app_id, boolean rsa2, String out_trade_no, String name, String price, String detail) {
+    public static Map<String, String> buildOrderParamMapV2(String app_id, boolean rsa2, String out_trade_no, String name, String price, String detail, String notifyUrl) {
         Map<String, String> keyValues = new HashMap<String, String>();
 
         keyValues.put("app_id", app_id);
@@ -87,6 +87,8 @@ public class AliPayOrderInfoUtil {
         keyValues.put("timestamp", "2017-10-20 13:55:53");
 
         keyValues.put("version", "1.0");
+
+        keyValues.put("notify_url", notifyUrl);
 
         return keyValues;
     }

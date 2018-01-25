@@ -73,9 +73,9 @@ public class AliPayTools {
      * @param aliPayModel
      * @param onRxHttp1
      */
-    public static void aliPayV2(final Activity activity, String appid, boolean isRsa2, String alipay_rsa_private, AliPayModel aliPayModel, OnRequestListener onRxHttp1) {
+    public static void aliPayV2(final Activity activity, String appid, boolean isRsa2, String alipay_rsa_private, String notifyUrl, AliPayModel aliPayModel, OnRequestListener onRxHttp1) {
         sOnRequestListener = onRxHttp1;
-        Map<String, String> params = AliPayOrderInfoUtil.buildOrderParamMapV2(appid, isRsa2, aliPayModel.getOut_trade_no(), aliPayModel.getName(), aliPayModel.getMoney(), aliPayModel.getDetail());
+        Map<String, String> params = AliPayOrderInfoUtil.buildOrderParamMapV2(appid, isRsa2, aliPayModel.getOut_trade_no(), aliPayModel.getName(), aliPayModel.getMoney(), aliPayModel.getDetail(), notifyUrl);
         String orderParam = AliPayOrderInfoUtil.buildOrderParam(params);
 
         String privateKey = alipay_rsa_private;
@@ -105,7 +105,7 @@ public class AliPayTools {
     /**
      * 支付宝旧版支付
      */
-    public static void aliPayV1(final Activity activity, String PID,String seller, String alipay_rsa_private, String notifyUrl, AliPayModel aliPayModel, OnRequestListener onRxHttp1) {
+    public static void aliPayV1(final Activity activity, String PID, String seller, String alipay_rsa_private, String notifyUrl, AliPayModel aliPayModel, OnRequestListener onRxHttp1) {
         sOnRequestListener = onRxHttp1;
         String orderParam = AliPayOrderInfoUtil.buildOrderParamStringV1(PID, seller, aliPayModel.getOut_trade_no(), aliPayModel.getName(), aliPayModel.getMoney(), aliPayModel.getDetail(), notifyUrl);
         String sign = AliPaySignUtils.sign(orderParam, alipay_rsa_private, false);

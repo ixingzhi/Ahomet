@@ -36,6 +36,7 @@ public class JsALiPay {
                 Constants.ALIPAY_APP_ID,//支付宝分配的APP_ID
                 true,//是否是 RSA2 加密
                 Constants.ALIPAY_RSA_PRIVATE,// RSA 或 RSA2 字符串
+                Constants.ALIPAY_NOTIFY_URL,
                 new AliPayModel(orderNo,//订单ID (唯一)
                         price,//价格
                         title,//商品名称

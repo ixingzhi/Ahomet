@@ -5,16 +5,16 @@ package com.shichuang.ahomet.entify;
  */
 
 public class WxPay {
-    private String orderNo;
+    private String orderNO;
     private String price;
     private String title;
 
-    public String getOrderNo() {
-        return orderNo;
+    public String getOrderNO() {
+        return orderNO;
     }
 
-    public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo;
+    public void setOrderNO(String orderNO) {
+        this.orderNO = orderNO;
     }
 
     public String getPrice() {
