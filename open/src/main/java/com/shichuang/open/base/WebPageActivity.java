@@ -7,6 +7,7 @@ import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ public class WebPageActivity extends BaseActivity {
     private Toolbar mToolbar;
     private X5ProgressBarWebView mWebView;
     private String mUrl;
+    private String mTitle;
 
     @Override
     public int getLayoutId() {
@@ -36,6 +38,7 @@ public class WebPageActivity extends BaseActivity {
 
     @Override
     public void initView(Bundle savedInstanceState, View view) {
+        mTitle = getIntent().getStringExtra("title");
         mUrl = getIntent().getStringExtra("url");
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -47,7 +50,7 @@ public class WebPageActivity extends BaseActivity {
 
             @Override
             public void setTitle(String title) {
-                if (mToolbar != null) {
+                if (mToolbar != null && TextUtils.isEmpty(mTitle)) {
                     mToolbar.setTitle(title);
                 }
             }
@@ -125,9 +128,11 @@ public class WebPageActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    public static Intent createIntent(Context context, String url) {
-        Intent i = new Intent(context, WebPageActivity.class);
-        i.putExtra("url", url);
-        return i;
+    public static void newInstance(Context context, String title, String url) {
+        Bundle bundle = new Bundle();
+        bundle.putString("title", title);
+        bundle.putString("url", url);
+        RxActivityTool.skipActivity(context, WebPageActivity.class, bundle);
     }
+
 }

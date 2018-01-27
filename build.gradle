@@ -30,10 +30,10 @@ task clean(type: Delete) {
 ext {
     compileSdkVersion = 26
     buildToolsVersion = "26.0.3"
-    applicationId = "com.shichuang.ahomet"
+    applicationId = "com.shichuang.HotelClient"
     minSdkVersion = 19
     targetSdkVersion = 26
-    versionCode = 5
-    versionName = "1.0.6"
+    versionCode = 10
+    versionName = "2.0.1"
     supportVersion = '26.0.0-alpha1'
 }
