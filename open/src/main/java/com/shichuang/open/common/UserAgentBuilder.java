@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 public class UserAgentBuilder {
     private static String addressInfo = "";
+    public static final String DEFAULT_INFO = "ahometandroid";
 
     public static void setAddressInfo(String addressInfo) {
         UserAgentBuilder.addressInfo = addressInfo;
@@ -15,7 +16,7 @@ public class UserAgentBuilder {
 
     public static String ua() {
         if (TextUtils.isEmpty(addressInfo)) {
-            return "ahometandroid";
+            return DEFAULT_INFO;
         } else {
             return "ahometandroid" + "[" + addressInfo + "]";
         }

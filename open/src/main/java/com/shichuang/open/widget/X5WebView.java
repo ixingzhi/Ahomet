@@ -2,8 +2,6 @@ package com.shichuang.open.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
-
 import com.shichuang.open.common.UserAgentBuilder;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
@@ -35,6 +33,5 @@ public class X5WebView extends WebView {
         webSettings.setAppCacheEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setUserAgentString(webSettings.getUserAgentString() + UserAgentBuilder.ua());
-        Log.i("test", "UserAgentString:" + webSettings.getUserAgentString() + UserAgentBuilder.ua());
     }
 }

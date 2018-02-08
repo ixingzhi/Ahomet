@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.shichuang.HotelClient">
+    package="com.shichuang.ahomet">
 
     <!--该权限group,用于访问网络，或者基于网络的lbs定位服务,以及微信,微博,QQ分享和登陆功能，判断或改变网络状态等功能-->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -17,7 +17,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.GET_TASKS" />
 
-    <uses-permission android:name="com.shichuang.HotelClient.permission.JPUSH_MESSAGE" />
+    <uses-permission android:name="com.shichuang.ahomet.permission.JPUSH_MESSAGE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -31,19 +31,20 @@
 
     <!-- Required -->
     <permission
-        android:name="com.shichuang.HotelClient.permission.JPUSH_MESSAGE"
+        android:name="com.shichuang.ahomet.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
 
     <application
-        android:name="com.shichuang.HotelClient.AhometApplication"
+        android:name="com.shichuang.ahomet.AhometApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_logo"
         android:supportsRtl="true"
+        android:hardwareAccelerated="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name="com.shichuang.HotelClient.activity.SplashActivity"
+            android:name="com.shichuang.ahomet.activity.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -54,27 +55,29 @@
         </activity>
 
         <activity
-            android:name="com.shichuang.HotelClient.MainActivity"
+            android:name="com.shichuang.ahomet.MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.shichuang.HotelClient.activity.GuidePageActivity"
+            android:name="com.shichuang.ahomet.activity.GuidePageActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.shichuang.HotelClient.activity.SettingActivity"
+            android:name="com.shichuang.ahomet.activity.SettingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.shichuang.HotelClient.activity.AboutUsActivity"
+            android:name="com.shichuang.ahomet.activity.AboutUsActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.shichuang.open.base.WebPageActivity"
             android:screenOrientation="portrait" />
-        <!--************************************ 友盟分享集成开始 ************************************ -->
+               <!--************************************ 友盟分享集成开始 ************************************ -->
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="5a5583e9f43e484a2d000131"></meta-data>
 
         <activity
-            android:name="com.shichuang.HotelClient.wxapi.WXEntryActivity"
+            android:name="com.shichuang.ahomet.wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:screenOrientation="portrait"
@@ -122,7 +125,7 @@
 
         <!-- 微信支付 -->
         <activity
-            android:name="com.shichuang.HotelClient.wxapi.WXPayEntryActivity"
+            android:name="com.shichuang.ahomet.wxapi.WXPayEntryActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:launchMode="singleTop"
@@ -141,7 +144,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" />
         <!-- App更新 -->
-        <service android:name="com.shichuang.HotelClient.service.AppUpdateService" />
+        <service android:name="com.shichuang.ahomet.service.AppUpdateService" />
 <!--        &lt;!&ndash;自动更新&ndash;&gt;
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -170,7 +173,7 @@
                 <action android:name="cn.jpush.android.ui.PushActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="com.shichuang.HotelClient" />
+                <category android:name="com.shichuang.ahomet" />
             </intent-filter>
         </activity>
 
@@ -190,7 +193,7 @@
         <!-- since 3.0.9 Required SDK 核心功能-->
         <provider
             android:name="cn.jpush.android.service.DataProvider"
-            android:authorities="com.shichuang.HotelClient.DataProvider"
+            android:authorities="com.shichuang.ahomet.DataProvider"
             android:exported="false" />
 
         <!-- since 1.8.0 option 可选项。用于同一设备中不同应用的JPush服务相互拉起的功能。 -->
@@ -201,14 +204,14 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.DaemonService" />
-                <category android:name="com.shichuang.HotelClient" />
+                <category android:name="com.shichuang.ahomet" />
             </intent-filter>
 
         </service>
         <!-- since 3.1.0 Required SDK 核心功能-->
         <provider
             android:name="cn.jpush.android.service.DownloadProvider"
-            android:authorities="com.shichuang.HotelClient.DownloadProvider"
+            android:authorities="com.shichuang.ahomet.DownloadProvider"
             android:exported="true" />
         <!-- Required SDK核心功能-->
         <receiver
@@ -217,7 +220,7 @@
             android:exported="false">
             <intent-filter android:priority="1000">
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />   <!--Required  显示通知栏 -->
-                <category android:name="com.shichuang.HotelClient" />
+                <category android:name="com.shichuang.ahomet" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.USER_PRESENT" />
@@ -239,7 +242,7 @@
 
         <!-- User defined.  For test only  用户自定义的广播接收器-->
         <receiver
-            android:name="com.shichuang.HotelClient.push.MyJpushReceiver"
+            android:name="com.shichuang.ahomet.push.MyJpushReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
@@ -248,14 +251,14 @@
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" /> <!--Required  用户接收SDK通知栏信息的intent-->
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" /> <!--Required  用户打开自定义通知栏的intent-->
                 <action android:name="cn.jpush.android.intent.CONNECTION" /><!-- 接收网络变化 连接/断开 since 1.6.3 -->
-                <category android:name="com.shichuang.HotelClient" />
+                <category android:name="com.shichuang.ahomet" />
             </intent-filter>
         </receiver>
         <!-- User defined.  For test only  用户自定义接收消息器,3.0.7开始支持,目前新tag/alias接口设置结果会在该广播接收器对应的方法中回调-->
-        <receiver android:name="com.shichuang.HotelClient.push.MyJPushMessageReceiver">
+        <receiver android:name="com.shichuang.ahomet.push.MyJPushMessageReceiver">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
-                <category android:name="com.shichuang.HotelClient"></category>
+                <category android:name="com.shichuang.ahomet"></category>
             </intent-filter>
         </receiver>
         <!-- Required  . Enable it you can get statistics data with channel -->

@@ -26,9 +26,9 @@ android {
 
     signingConfigs {
         appkey {
-            keyAlias 'HotelClient'
+            keyAlias 'Ahomet'
             keyPassword '123456'
-            storeFile file('../HotelClient.jks')
+            storeFile file('../Ahomet.jks')
             storePassword '123456'
         }
     }
