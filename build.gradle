@@ -33,7 +33,7 @@ ext {
     applicationId = "com.shichuang.ahomet"
     minSdkVersion = 19
     targetSdkVersion = 26
-    versionCode = 237
-    versionName = "2.0.3"
+    versionCode = 238
+    versionName = "2.0.4"
     supportVersion = '26.0.0-alpha1'
 }

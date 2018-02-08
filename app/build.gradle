@@ -65,7 +65,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':open')
     compile(name: 'didi_sdk_for_common_v1.1.0_05_28', ext: 'aar')
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.7'
 }
 
 repositories {
