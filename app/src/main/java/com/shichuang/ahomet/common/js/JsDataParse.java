@@ -12,6 +12,7 @@ import com.shichuang.ahomet.common.UserCache;
 import com.shichuang.ahomet.common.Utils;
 import com.shichuang.ahomet.entify.ALiPay;
 import com.shichuang.ahomet.entify.MessageEvent;
+import com.shichuang.ahomet.entify.Navigation;
 import com.shichuang.ahomet.entify.Platform;
 import com.shichuang.ahomet.entify.Share;
 import com.shichuang.ahomet.entify.User;
@@ -53,6 +54,8 @@ public class JsDataParse {
     private static final String SETTING_TYPE = "settings";
     // GPS定位
     private static final String GPS_TYPE = "needGPS";
+    // 导航
+    private static final String NAVIGATION_TYPE = "navigation";
 
     public static class JsData<T> {
         public String type;
@@ -121,13 +124,13 @@ public class JsDataParse {
 
             UserCache.clear(context);
             JpushUtils.delJpushAlias(context);
+            //EventBus.getDefault().post(new MessageEvent("logout"));
 //            Type type = new TypeToken<JsData<String>>() {
 //            }.getType();
 //            JsData<String> jsData = Convert.fromJson(tag, type);
 //           EventBus.getDefault().post(new MessageEvent(jsData.data));
 
         } else if (platformType.equals(LOGIN_TYPE)) {  // 自动登录
-
             Type type = new TypeToken<JsData<User>>() {
             }.getType();
             JsData<User> jsData = Convert.fromJson(tag, type);
@@ -136,6 +139,7 @@ public class JsDataParse {
                 UserCache.update(context, jsData.data);
                 // 设置极光推送别名
                 JpushUtils.setJpushAlias(context, jsData.data.getPhone());
+                //EventBus.getDefault().post(new MessageEvent("login"));
             }
 
         } else if (platformType.equals(CALL_TYPE)) {  // 拨打电话
@@ -153,6 +157,13 @@ public class JsDataParse {
 
             EventBus.getDefault().post(new MessageEvent("needGps"));
 
+        } else if (platformType.equals(NAVIGATION_TYPE)) {
+            Type type = new TypeToken<JsData<Navigation>>() {
+            }.getType();
+            JsData<Navigation> jsData = Convert.fromJson(tag, type);
+            if(jsData != null && jsData.data != null){
+                JsNavigation.getInstance().navigation(context,jsData.data);
+            }
         }
     }
 }

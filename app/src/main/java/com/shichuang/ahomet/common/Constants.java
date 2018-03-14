@@ -5,8 +5,8 @@ package com.shichuang.ahomet.common;
  */
 
 public interface Constants {
-    String MAIN_ENGINE = "https://www.ahomet.com";
-    //String MAIN_ENGINE = "http://139.196.231.53:8080";
+    //String MAIN_ENGINE = "https://www.ahomet.com";
+    String MAIN_ENGINE = "http://139.196.231.53:8080";
 
     String ALIPAY_APP_ID = "2016011401092710";
     String ALIPAY_PID = "2088301826965745";
@@ -32,4 +32,5 @@ public interface Constants {
     String copyrightUrl = MAIN_ENGINE + "/mobile/singlePage/mobile_legal_notices";
     String privacyPolicyUrl = MAIN_ENGINE + "/mobile/singlePage/mobile_privacy_policy";
     String userAgreementUrl = MAIN_ENGINE + "/mobile/singlePage/mobile_user_treaty";
+    String aboutUsUrl = MAIN_ENGINE + "/mobile/singlePage/mobile_about_us";
 }

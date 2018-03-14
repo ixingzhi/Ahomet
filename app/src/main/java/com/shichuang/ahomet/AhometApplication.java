@@ -58,7 +58,7 @@ public class AhometApplication extends BaseApplication {
         Config.DEBUG = true;
         UMShareAPI.get(this);
         PlatformConfig.setWeixin("wx1773b107a60f360b", "a9615d31c1f66ab3e670b17338b2cb58");
-        PlatformConfig.setQQZone("1105543666", "");
+        PlatformConfig.setQQZone("1106715992", "ktiI3MdTnoRRzIOC");
         PlatformConfig.setSinaWeibo("2006352818", "cc508e298010aad2592c6cf10012da87", "http://www.creatrue.net");
     }
 

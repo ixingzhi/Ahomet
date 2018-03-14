@@ -65,6 +65,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':open')
     compile(name: 'didi_sdk_for_common_v1.1.0_05_28', ext: 'aar')
+    // 圆形图片
+    compile 'de.hdodenhof:circleimageview:2.1.0'
 }
 
 repositories {

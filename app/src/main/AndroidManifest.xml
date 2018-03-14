@@ -37,11 +37,11 @@
     <application
         android:name="com.shichuang.ahomet.AhometApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_logo"
         android:supportsRtl="true"
-        android:hardwareAccelerated="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name="com.shichuang.ahomet.activity.SplashActivity"
@@ -57,8 +57,9 @@
         <activity
             android:name="com.shichuang.ahomet.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:windowSoftInputMode="stateHidden|adjustResize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name="com.shichuang.ahomet.activity.GuidePageActivity"
             android:screenOrientation="portrait" />
@@ -71,7 +72,7 @@
         <activity
             android:name="com.shichuang.open.base.WebPageActivity"
             android:screenOrientation="portrait" />
-               <!--************************************ 友盟分享集成开始 ************************************ -->
+        <!--************************************ 友盟分享集成开始 ************************************ -->
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="5a5583e9f43e484a2d000131"></meta-data>
@@ -92,7 +93,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="tencent1105543666" />
+                <data android:scheme="tencent1106715992" />
             </intent-filter>
         </activity>
         <activity
@@ -145,16 +146,16 @@
             android:theme="@android:style/Theme.NoTitleBar" />
         <!-- App更新 -->
         <service android:name="com.shichuang.ahomet.service.AppUpdateService" />
-<!--        &lt;!&ndash;自动更新&ndash;&gt;
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.shichuang.governmentaffairsoa.fileprovider"
-            android:grantUriPermissions="true"
-            android:exported="false">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>-->
+        <!--        &lt;!&ndash;自动更新&ndash;&gt;
+                <provider
+                    android:name="android.support.v4.content.FileProvider"
+                    android:authorities="com.shichuang.governmentaffairsoa.fileprovider"
+                    android:grantUriPermissions="true"
+                    android:exported="false">
+                    <meta-data
+                        android:name="android.support.FILE_PROVIDER_PATHS"
+                        android:resource="@xml/file_paths" />
+                </provider>-->
         <!-- ***********************************极光推送配置开始***********************************-->
 
         <!-- Rich push 核心功能 since 2.0.6-->
@@ -286,8 +287,7 @@
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote" >
-        </service>
+            android:process=":remote"></service>
 
         <!-- AK鉴权 -->
         <meta-data

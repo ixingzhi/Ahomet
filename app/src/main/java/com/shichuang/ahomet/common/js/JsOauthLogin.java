@@ -149,6 +149,7 @@ public class JsOauthLogin {
                     public void onSuccess(Response<AMBaseDto<OauthLogin>> response) {
                         if (response.body().code == 0) {
                             EventBus.getDefault().post(new MessageEvent(response.body().data.getUrl()));
+                            //EventBus.getDefault().post(new MessageEvent("login"));
                         } else {
                             RxToastTool.showLong(response.body().msg);
                         }

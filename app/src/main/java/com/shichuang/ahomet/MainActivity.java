@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
@@ -34,6 +35,7 @@ import com.shichuang.open.common.UserAgentBuilder;
 import com.shichuang.open.tool.RxFileTool;
 import com.shichuang.open.widget.RxEmptyLayout;
 import com.shichuang.open.widget.X5ProgressBarWebView;
+import com.shichuang.open.widget.slidingmenu.SlidingMenu;
 import com.tencent.smtt.sdk.ValueCallback;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
@@ -51,6 +53,8 @@ import java.util.List;
 public class MainActivity extends BaseActivity {
     private X5ProgressBarWebView mWebView;
     private RxEmptyLayout mEmptyLayout;
+    private View menuLayout;
+    private SlidingMenu menu;
     private String mUrl;
     private long mExitTime;
     private boolean firstEnter = true;
@@ -59,7 +63,7 @@ public class MainActivity extends BaseActivity {
     private LocationService locationService;
 
     private String[] needPermissions = {
-            android.Manifest.permission.ACCESS_COARSE_LOCATION,    //通过WiFi或移动基站的方式获取用户错略的经纬度信息，定位精度大概误差在30~1500米
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,    //通过WiFi或移动基站的方式获取用户粗略的经纬度信息，定位精度大概误差在30~1500米
             android.Manifest.permission.ACCESS_FINE_LOCATION,   //通过GPS芯片接收卫星的定位信息，定位精度达10米以内
             android.Manifest.permission.READ_PHONE_STATE   //访问电话状态
     };
@@ -76,6 +80,18 @@ public class MainActivity extends BaseActivity {
     public void initView(Bundle savedInstanceState, View view) {
         mUrl = getIntent().getStringExtra("url");
         mEmptyLayout = (RxEmptyLayout) findViewById(R.id.empty_layout);
+        initWebPage();
+        initLocation();
+        initMenu();
+        EventBus.getDefault().register(this);
+        if (mWebView.getX5WebViewExtension() != null) {
+            Log.d("test", "X5内核");
+        } else {
+            Log.d("test", "不是 X5内核");
+        }
+    }
+
+    private void initWebPage() {
         mWebView = (X5ProgressBarWebView) findViewById(R.id.web_view);
         mWebView.addJavascriptInterface(new JsFunction(), "jsobj");
         mWebView.setWebViewClient(new MainActivity.WebClient());
@@ -104,27 +120,38 @@ public class MainActivity extends BaseActivity {
             }
         });
         mWebView.loadUrl(mUrl);
-        initLocation();
-        EventBus.getDefault().register(this);
-//        if(mWebView.getX5WebViewExtension() != null){
-//            showToast("X5");
-//        }else{
-//            showToast("no X5");
-//        }
+    }
+
+    private void initMenu() {
+        menuLayout = LayoutInflater.from(this).inflate(R.layout.layout_sliding_menu, null);
+        menu = new SlidingMenu(this);
+        menu.setMode(SlidingMenu.RIGHT);
+        // 设置触摸模式，可以选择全屏划出，或者是边缘划出，或者是不可划出
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        // 滑出时主页面显示的剩余宽度(400)
+        //menu.setBehindWidth(400);
+        // 设置侧滑栏完全展开之后，距离另外一边的距离，单位px，设置的越大，侧滑栏的宽度越小
+        menu.setBehindOffset(200);
+        // 设置渐变的程度，范围是0-1.0f,设置的越大，则在侧滑栏刚划出的时候，颜色就越暗，1.0f的时候，颜色为全黑
+        menu.setFadeDegree(0.35f);
+        menu.attachToActivity(this, SlidingMenu.SLIDING_WINDOW);
+        menu.setMenu(menuLayout);
     }
 
     @Override
     public void initEvent() {
+        menuLayout.findViewById(R.id.iv_menu_close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                menu.toggle();
+            }
+        });
+
     }
 
     @Override
     public void initData() {
         AppUpdateUtils.getInstance().update(mContext);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
     }
 
     @Override
@@ -193,13 +220,21 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(MessageEvent event) {
-        if (event != null && event.message != null && "needGps".equals(event.message)) {
+        if (event == null || event.message == null) {
+            return;
+        }
+        if ("needGps".equals(event.message)) {
             checkPermissions(needPermissions);
-        } else if (event != null && event.message != null && mWebView != null) {
+        } else if ("login".equals(event.message)) {
+
+        } else if ("logout".equals(event.message)) {
+
+        } else if (mWebView != null) {
             //mWebView.clearHistory();
             mWebView.loadUrl(event.message);
         }
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

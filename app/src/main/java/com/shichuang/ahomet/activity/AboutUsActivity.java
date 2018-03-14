@@ -27,10 +27,10 @@ public class AboutUsActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void initEvent() {
-        //findViewById(R.id.rl_function_introduction).setOnClickListener(this);
-        findViewById(R.id.rl_copyright).setOnClickListener(this);
-        findViewById(R.id.rl_privacy_policy).setOnClickListener(this);
+        findViewById(R.id.rl_about_us).setOnClickListener(this);
         findViewById(R.id.rl_user_agreement).setOnClickListener(this);
+        findViewById(R.id.rl_privacy_policy).setOnClickListener(this);
+        findViewById(R.id.rl_copyright).setOnClickListener(this);
         ((TextView) findViewById(R.id.tv_version_number)).setText("版本：" + getVersionNumber());
     }
 
@@ -41,18 +41,19 @@ public class AboutUsActivity extends BaseActivity implements View.OnClickListene
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-//            case R.id.rl_function_introduction:
-//                openWebPage("功能介绍", Constants.functionIntroductionUrl);
-//                break;
-            case R.id.rl_copyright:
-                openWebPage("法律声明", Constants.copyrightUrl);
-                break;
-            case R.id.rl_privacy_policy:
-                openWebPage("隐私政策", Constants.privacyPolicyUrl);
+            case R.id.rl_about_us:
+                openWebPage("关于我们", Constants.aboutUsUrl);
                 break;
             case R.id.rl_user_agreement:
                 openWebPage("用户协议", Constants.userAgreementUrl);
                 break;
+            case R.id.rl_privacy_policy:
+                openWebPage("隐私政策", Constants.privacyPolicyUrl);
+                break;
+            case R.id.rl_copyright:
+                openWebPage("负责声明", Constants.copyrightUrl);
+                break;
+
             default:
                 break;
         }
