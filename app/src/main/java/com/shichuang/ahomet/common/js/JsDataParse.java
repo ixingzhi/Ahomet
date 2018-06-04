@@ -11,7 +11,8 @@ import com.shichuang.ahomet.common.JpushUtils;
 import com.shichuang.ahomet.common.UserCache;
 import com.shichuang.ahomet.common.Utils;
 import com.shichuang.ahomet.entify.ALiPay;
-import com.shichuang.ahomet.entify.MessageEvent;
+import com.shichuang.ahomet.entify.AutoLogin;
+import com.shichuang.ahomet.event.MessageEvent;
 import com.shichuang.ahomet.entify.Navigation;
 import com.shichuang.ahomet.entify.Platform;
 import com.shichuang.ahomet.entify.Share;
@@ -54,8 +55,10 @@ public class JsDataParse {
     private static final String SETTING_TYPE = "settings";
     // GPS定位
     private static final String GPS_TYPE = "needGPS";
-    // 导航
+    // 地图导航
     private static final String NAVIGATION_TYPE = "navigation";
+    // 打开右侧菜单
+    private static final String OPEN_MENU_TYPE = "rightScroll";
 
     public static class JsData<T> {
         public String type;
@@ -124,22 +127,22 @@ public class JsDataParse {
 
             UserCache.clear(context);
             JpushUtils.delJpushAlias(context);
-            //EventBus.getDefault().post(new MessageEvent("logout"));
+            EventBus.getDefault().post(new MessageEvent(MessageEvent.UPDATE_LOGIN_STATUS));
 //            Type type = new TypeToken<JsData<String>>() {
 //            }.getType();
 //            JsData<String> jsData = Convert.fromJson(tag, type);
 //           EventBus.getDefault().post(new MessageEvent(jsData.data));
 
         } else if (platformType.equals(LOGIN_TYPE)) {  // 自动登录
-            Type type = new TypeToken<JsData<User>>() {
+            Type type = new TypeToken<JsData<AutoLogin>>() {
             }.getType();
-            JsData<User> jsData = Convert.fromJson(tag, type);
+            JsData<AutoLogin> jsData = Convert.fromJson(tag, type);
             // 保存用户信息
             if (jsData != null && jsData.data != null) {
-                UserCache.update(context, jsData.data);
-                // 设置极光推送别名
-                JpushUtils.setJpushAlias(context, jsData.data.getPhone());
-                //EventBus.getDefault().post(new MessageEvent("login"));
+                User user = new User();
+                user.setToken(jsData.data.getToken());
+                UserCache.update(context, user);
+                EventBus.getDefault().post(new MessageEvent(MessageEvent.UPDATE_LOGIN_STATUS));
             }
 
         } else if (platformType.equals(CALL_TYPE)) {  // 拨打电话
@@ -155,15 +158,19 @@ public class JsDataParse {
 
         } else if (platformType.equals(GPS_TYPE)) {
 
-            EventBus.getDefault().post(new MessageEvent("needGps"));
+            EventBus.getDefault().post(new MessageEvent(MessageEvent.NEED_GPS));
 
         } else if (platformType.equals(NAVIGATION_TYPE)) {
             Type type = new TypeToken<JsData<Navigation>>() {
             }.getType();
             JsData<Navigation> jsData = Convert.fromJson(tag, type);
-            if(jsData != null && jsData.data != null){
-                JsNavigation.getInstance().navigation(context,jsData.data);
+            if (jsData != null && jsData.data != null) {
+                JsNavigation.getInstance().navigation(context, jsData.data);
             }
+        } else if (platformType.equals(OPEN_MENU_TYPE)) {
+
+            EventBus.getDefault().post(new MessageEvent(MessageEvent.OPEN_MENU));
+
         }
     }
 }

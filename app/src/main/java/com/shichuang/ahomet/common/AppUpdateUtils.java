@@ -2,7 +2,9 @@ package com.shichuang.ahomet.common;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -30,7 +32,7 @@ public class AppUpdateUtils {
     private static final String FILE_NAME = "ahomet";
     private static AppUpdateUtils mInstance;
     private Context mContext;
-    //private ProgressDialog mProgressDialog;
+    private ProgressDialog mProgressDialog;
     private String[] needPermissions = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private String url;
@@ -150,32 +152,32 @@ public class AppUpdateUtils {
     }
 
     private void startService() {
-//        mProgressDialog = new ProgressDialog(mContext);
-//        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-//        mProgressDialog.setTitle("新版本下载中...");
-//        //mProgressDialog.setMessage("");
-//        mProgressDialog.setMax(100);
-//        mProgressDialog.setButton(DialogInterface.BUTTON_POSITIVE, "后台下载", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//            }
-//        });
-//        mProgressDialog.show();
+        mProgressDialog = new ProgressDialog(mContext);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setTitle("新版本下载中...");
+        //mProgressDialog.setMessage("");
+        mProgressDialog.setMax(100);
+        mProgressDialog.setButton(DialogInterface.BUTTON_POSITIVE, "后台下载", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        mProgressDialog.show();
 
         // 启动Service 开始下载
         AppUpdateService.startUpdate(mContext, url, FILE_NAME, new AppUpdateService.OnProgressListener() {
             @Override
             public void onProgress(int progress) {
-//                if (mProgressDialog != null) {
-//                    mProgressDialog.setProgress(progress);
-//                }
+                if (mProgressDialog != null) {
+                    mProgressDialog.setProgress(progress);
+                }
             }
 
             @Override
             public void onSuccess(boolean isSuccess) {
-//                if (mProgressDialog != null) {
-//                    mProgressDialog.dismiss();
-//                }
+                if (mProgressDialog != null) {
+                    mProgressDialog.dismiss();
+                }
                 // 失败提示
                 if (isSuccess) {
                     RxToastTool.showShort("下载成功");

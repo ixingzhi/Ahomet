@@ -198,10 +198,10 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Response<AMBaseDto<String>> response) {
                         if (isFinishing()) return;
-                        if (response.body() != null && response.body().data != null) {
+                        if (response.body().code == 0) {
                             startUp(response.body().data);
-                        } else {
-                            startUp(Constants.loginUrl);
+                        }else{
+                            startUp(Constants.homeUrl);
                         }
                     }
 
@@ -209,7 +209,7 @@ public class SplashActivity extends AppCompatActivity {
                     public void onError(Response<AMBaseDto<String>> response) {
                         super.onError(response);
                         if (isFinishing()) return;
-                        startUp(Constants.loginUrl);
+                        startUp(Constants.homeUrl);
                     }
 
                     @Override

@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/rl_menu_user_information"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="24dp">
@@ -23,20 +24,21 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/iv_avatar"
             android:layout_marginLeft="16dp"
-            android:layout_toEndOf="@+id/iv_avatar"
             android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/iv_avatar"
             android:text="请登录"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/tv_member_expiration_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/iv_avatar"
+            android:layout_marginBottom="8dp"
             android:layout_marginLeft="16dp"
             android:layout_toEndOf="@+id/iv_avatar"
             android:text="到期时间："
-            android:layout_marginBottom="8dp"
             android:textColor="@color/black" />
 
         <ImageView
@@ -57,13 +59,15 @@
         android:background="@color/gray" />
 
     <LinearLayout
+        android:id="@+id/ll_menu_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_click_color"
         android:gravity="center_vertical"
+        android:paddingBottom="12dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp">
+        android:paddingTop="12dp">
 
         <ImageView
             android:layout_width="20dp"
@@ -80,13 +84,15 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_menu_nearby"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_click_color"
         android:gravity="center_vertical"
+        android:paddingBottom="12dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp">
+        android:paddingTop="12dp">
 
         <ImageView
             android:layout_width="20dp"
@@ -112,13 +118,15 @@
         android:background="@color/gray" />
 
     <LinearLayout
+        android:id="@+id/ll_menu_mine"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_click_color"
         android:gravity="center_vertical"
+        android:paddingBottom="12dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp">
+        android:paddingTop="12dp">
 
         <ImageView
             android:layout_width="20dp"
@@ -135,13 +143,15 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_menu_order"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_click_color"
         android:gravity="center_vertical"
+        android:paddingBottom="12dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp">
+        android:paddingTop="12dp">
 
         <ImageView
             android:layout_width="20dp"
@@ -158,13 +168,15 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_menu_collect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_click_color"
         android:gravity="center_vertical"
+        android:paddingBottom="12dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp">
+        android:paddingTop="12dp">
 
         <ImageView
             android:layout_width="20dp"
@@ -181,13 +193,15 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_menu_login_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_click_color"
         android:gravity="center_vertical"
+        android:paddingBottom="12dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp">
+        android:paddingTop="12dp">
 
         <ImageView
             android:layout_width="20dp"
@@ -196,10 +210,11 @@
             android:src="@drawable/ic_menu_logout" />
 
         <TextView
+            android:id="@+id/tv_login_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:text="退出登录"
+            android:text="注册、登录"
             android:textColor="@color/black" />
     </LinearLayout>
 
@@ -213,13 +228,15 @@
         android:background="@color/gray" />
 
     <LinearLayout
+        android:id="@+id/ll_menu_feedback"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_click_color"
         android:gravity="center_vertical"
+        android:paddingBottom="12dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp">
+        android:paddingTop="12dp">
 
         <ImageView
             android:layout_width="20dp"
@@ -236,13 +253,15 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_menu_service"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_click_color"
         android:gravity="center_vertical"
+        android:paddingBottom="12dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp">
+        android:paddingTop="12dp">
 
         <ImageView
             android:layout_width="20dp"

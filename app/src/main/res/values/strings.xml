@@ -3,7 +3,7 @@
 
     <string name="main_tab_name_home">首页</string>
     <string name="main_tab_name_nearby">附近</string>
-    <string name="main_tab_name_dynamic">动态</string>
+    <string name="main_tab_name_member">会员</string>
     <string name="main_tab_name_mine">我的</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

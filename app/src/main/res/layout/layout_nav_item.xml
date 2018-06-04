@@ -12,15 +12,15 @@
 
         <ImageView
             android:id="@+id/nav_iv_icon"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_gravity="center_horizontal"
             android:contentDescription="@string/app_name"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
             android:paddingTop="2dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/tab_icon_new" />
+            android:src="@drawable/tab_icon_home" />
 
         <TextView
             android:id="@+id/nav_tv_dot"

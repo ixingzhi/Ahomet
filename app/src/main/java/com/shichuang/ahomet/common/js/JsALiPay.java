@@ -5,7 +5,7 @@ import android.content.Context;
 
 import com.shichuang.ahomet.common.Constants;
 import com.shichuang.ahomet.entify.ALiPay;
-import com.shichuang.ahomet.entify.MessageEvent;
+import com.shichuang.ahomet.event.MessageEvent;
 import com.shichuang.ahomet.widget.payment.OnRequestListener;
 import com.shichuang.ahomet.widget.payment.alipay.AliPayModel;
 import com.shichuang.ahomet.widget.payment.alipay.AliPayTools;

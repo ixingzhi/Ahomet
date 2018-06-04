@@ -18,12 +18,12 @@ import com.shichuang.ahomet.R;
  * on 17/11/22.
  */
 public class NavigationButton extends FrameLayout {
-    private Fragment mFragment = null;
-    private Class<?> mClx;
+//    private Fragment mFragment = null;
+//    private Class<?> mClx;
     private ImageView mIconView;
     private TextView mTitleView;
     private TextView mDot;
-    private String mTag;
+//    private String mTag;
 
     public NavigationButton(Context context) {
         super(context);
@@ -69,24 +69,24 @@ public class NavigationButton extends FrameLayout {
     public void init(@DrawableRes int resId, @StringRes int strId, Class<?> clx) {
         mIconView.setImageResource(resId);
         mTitleView.setText(strId);
-        mClx = clx;
-        mTag = mClx.getName();
+//        mClx = clx;
+//        mTag = mClx.getName();
     }
 
-    public Class<?> getClx() {
-        return mClx;
-    }
+//    public Class<?> getClx() {
+//        return mClx;
+//    }
 
-    public Fragment getFragment() {
-        return mFragment;
-    }
+//    public Fragment getFragment() {
+//        return mFragment;
+//    }
 
-    public void setFragment(Fragment fragment) {
-        this.mFragment = fragment;
-    }
+//    public void setFragment(Fragment fragment) {
+//        this.mFragment = fragment;
+//    }
 
-    public String getTag() {
-        return mTag;
-    }
+//    public String getTag() {
+//        return mTag;
+//    }
 
 }

@@ -12,8 +12,9 @@ import com.shichuang.ahomet.R;
 import com.shichuang.ahomet.common.Constants;
 import com.shichuang.ahomet.common.NewsCallback;
 import com.shichuang.ahomet.entify.AMBaseDto;
-import com.shichuang.ahomet.entify.MessageEvent;
+import com.shichuang.ahomet.event.MessageEvent;
 import com.shichuang.ahomet.entify.OauthLogin;
+import com.shichuang.ahomet.event.SkipUrlEvent;
 import com.shichuang.open.tool.RxToastTool;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
@@ -148,8 +149,8 @@ public class JsOauthLogin {
                     @Override
                     public void onSuccess(Response<AMBaseDto<OauthLogin>> response) {
                         if (response.body().code == 0) {
-                            EventBus.getDefault().post(new MessageEvent(response.body().data.getUrl()));
-                            //EventBus.getDefault().post(new MessageEvent("login"));
+                            EventBus.getDefault().post(new SkipUrlEvent(response.body().data.getUrl()));
+                            EventBus.getDefault().post(new MessageEvent(MessageEvent.UPDATE_LOGIN_STATUS));
                         } else {
                             RxToastTool.showLong(response.body().msg);
                         }

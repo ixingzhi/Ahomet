@@ -23,4 +23,5 @@
     <color name="red">#FF0000</color>
     <color name="transparent">#00000000</color>
     <color name="click">#33ffffff</color>
+    <color name="blue">#267DE0</color>
 </resources>

@@ -1,65 +1,91 @@
 package com.shichuang.ahomet;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.JavascriptInterface;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
-import com.luck.picture.lib.PictureSelector;
-import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.entity.LocalMedia;
 import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.Response;
+import com.lzy.okgo.request.base.Request;
 import com.shichuang.ahomet.common.AppUpdateUtils;
+import com.shichuang.ahomet.common.Constants;
+import com.shichuang.ahomet.common.JpushUtils;
 import com.shichuang.ahomet.common.LocationService;
-import com.shichuang.ahomet.common.js.JsDataParse;
-import com.shichuang.ahomet.entify.MessageEvent;
+import com.shichuang.ahomet.common.NewsCallback;
+import com.shichuang.ahomet.common.UserCache;
+import com.shichuang.ahomet.entify.AMBaseDto;
+import com.shichuang.ahomet.entify.OauthLogin;
+import com.shichuang.ahomet.entify.User;
+import com.shichuang.ahomet.event.MessageEvent;
+import com.shichuang.ahomet.event.NavIndexEvent;
+import com.shichuang.ahomet.event.SkipUrlEvent;
+import com.shichuang.ahomet.fragment.MainPageFragment;
+import com.shichuang.ahomet.fragment.NavFragment;
+import com.shichuang.ahomet.view.NavigationButton;
 import com.shichuang.open.base.BaseActivity;
 import com.shichuang.open.common.UserAgentBuilder;
-import com.shichuang.open.tool.RxFileTool;
-import com.shichuang.open.widget.RxEmptyLayout;
+import com.shichuang.open.tool.RxGlideTool;
+import com.shichuang.open.tool.RxTimeTool;
+import com.shichuang.open.tool.RxToastTool;
 import com.shichuang.open.widget.X5ProgressBarWebView;
 import com.shichuang.open.widget.slidingmenu.SlidingMenu;
-import com.tencent.smtt.sdk.ValueCallback;
-import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
-import com.tencent.smtt.sdk.WebView;
-import com.tencent.smtt.sdk.WebViewClient;
 import com.umeng.socialize.UMShareAPI;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends BaseActivity {
-    private X5ProgressBarWebView mWebView;
-    private RxEmptyLayout mEmptyLayout;
+public class MainActivity extends BaseActivity implements NavFragment.OnTabSelectedListener {
+    private NavFragment mNavBar;
+    private FragmentManager mFragmentManager;
+    private LinearLayout mllNavBar;
+
     private View menuLayout;
     private SlidingMenu menu;
+    // menu layout
+    private RelativeLayout mRlMenuUserInformation;
+    private ImageView mIvAvatar;
+    private TextView mTvUserName;
+    private TextView mTvMemberExpirationDate;
+    private LinearLayout mLlMenuHome;
+    private LinearLayout mLlMenuNearby;
+    private LinearLayout mLlMenuMine;
+    private LinearLayout mLlMenuOrder;
+    private LinearLayout mLlMenuCollect;
+    private LinearLayout mLlMenuLoginStatus;
+    private TextView mTvLoginStatus;
+    private LinearLayout mLlMenuFeedback;
+    private LinearLayout mLlMenuService;
+
+    private X5ProgressBarWebView mWebView;
+
     private String mUrl;
     private long mExitTime;
-    private boolean firstEnter = true;
-    private ValueCallback<Uri> mUploadCallbackBelow;
-    private ValueCallback<Uri[]> mUploadCallbackAboveL;
+
     private LocationService locationService;
 
     private String[] needPermissions = {
@@ -79,47 +105,27 @@ public class MainActivity extends BaseActivity {
     @Override
     public void initView(Bundle savedInstanceState, View view) {
         mUrl = getIntent().getStringExtra("url");
-        mEmptyLayout = (RxEmptyLayout) findViewById(R.id.empty_layout);
-        initWebPage();
-        initLocation();
+        mllNavBar = (LinearLayout) findViewById(R.id.ll_nav_bar);
+        mFragmentManager = getSupportFragmentManager();
+        mNavBar = ((NavFragment) mFragmentManager.findFragmentById(R.id.fag_nav));
+        mNavBar.setup(this, mFragmentManager, R.id.main_container, mUrl, this);
+        getWebView();
         initMenu();
+        initLocation();
         EventBus.getDefault().register(this);
-        if (mWebView.getX5WebViewExtension() != null) {
-            Log.d("test", "X5内核");
-        } else {
-            Log.d("test", "不是 X5内核");
-        }
+        getUserInfoByToken();
     }
 
-    private void initWebPage() {
-        mWebView = (X5ProgressBarWebView) findViewById(R.id.web_view);
-        mWebView.addJavascriptInterface(new JsFunction(), "jsobj");
-        mWebView.setWebViewClient(new MainActivity.WebClient());
-        mWebView.setCallback(new X5ProgressBarWebView.Callback() {
-
+    private void getWebView() {
+        new Handler().postDelayed(new Runnable() {  // 创建Fragment提交事务是异步，需延迟获取WebView
             @Override
-            public void setTitle(String title) {
+            public void run() {
+                MainPageFragment fragment = mNavBar.getMainPageFragemnt();
+                if (fragment != null && fragment.getWebView() != null) {
+                    mWebView = fragment.getWebView();
+                }
             }
-
-            /**
-             * 16(Android 4.1.2) <= API <= 20(Android 4.4W.2)回调此方法
-             */
-            @Override
-            public void openFileChooser(ValueCallback<Uri> valueCallback, String acceptType, String capture) {
-                mUploadCallbackBelow = valueCallback;
-                takePhoto();
-            }
-
-            /**
-             * API >= 21(Android 5.0.1)回调此方法
-             */
-            @Override
-            public void onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, WebChromeClient.FileChooserParams fileChooserParams) {
-                mUploadCallbackAboveL = filePathCallback;
-                takePhoto();
-            }
-        });
-        mWebView.loadUrl(mUrl);
+        }, 100);
     }
 
     private void initMenu() {
@@ -136,6 +142,20 @@ public class MainActivity extends BaseActivity {
         menu.setFadeDegree(0.35f);
         menu.attachToActivity(this, SlidingMenu.SLIDING_WINDOW);
         menu.setMenu(menuLayout);
+
+        mRlMenuUserInformation = menuLayout.findViewById(R.id.rl_menu_user_information);
+        mIvAvatar = menuLayout.findViewById(R.id.iv_avatar);
+        mTvUserName = menuLayout.findViewById(R.id.tv_user_name);
+        mTvMemberExpirationDate = menuLayout.findViewById(R.id.tv_member_expiration_date);
+        mLlMenuHome = menuLayout.findViewById(R.id.ll_menu_home);
+        mLlMenuNearby = menuLayout.findViewById(R.id.ll_menu_nearby);
+        mLlMenuMine = menuLayout.findViewById(R.id.ll_menu_mine);
+        mLlMenuOrder = menuLayout.findViewById(R.id.ll_menu_order);
+        mLlMenuCollect = menuLayout.findViewById(R.id.ll_menu_collect);
+        mLlMenuLoginStatus = menuLayout.findViewById(R.id.ll_menu_login_status);
+        mTvLoginStatus = menuLayout.findViewById(R.id.tv_login_status);
+        mLlMenuFeedback = menuLayout.findViewById(R.id.ll_menu_feedback);
+        mLlMenuService = menuLayout.findViewById(R.id.ll_menu_service);
     }
 
     @Override
@@ -146,12 +166,56 @@ public class MainActivity extends BaseActivity {
                 menu.toggle();
             }
         });
+        skipPage(mLlMenuHome, Constants.homeUrl);
+        skipPage(mLlMenuNearby, Constants.nearbyUrl);
+        skipPage(mLlMenuMine, Constants.mineUrl);
+        skipPage(mLlMenuOrder, Constants.orderUrl);
+        skipPage(mLlMenuCollect, Constants.collectUrl);
+        skipPage(mLlMenuFeedback, Constants.feedbackUrl);
+        skipPage(mLlMenuService, Constants.serviceUrl);
 
+        mRlMenuUserInformation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                menu.toggle();
+                if (!UserCache.isUserLogin(mContext)) {
+                    if (mWebView != null)
+                        mWebView.loadUrl(Constants.loginUrl);
+                }
+            }
+        });
+        mLlMenuLoginStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                menu.toggle();
+                if (UserCache.isUserLogin(mContext)) {
+                    UserCache.clear(mContext);
+                    if (mWebView != null)
+                        mWebView.loadUrl(Constants.MAIN_ENGINE + "/ahomet/personal/mobile/log_out");
+                    EventBus.getDefault().post(new MessageEvent(MessageEvent.UPDATE_LOGIN_STATUS));
+                } else {
+                    if (mWebView != null)
+                        mWebView.loadUrl(Constants.loginUrl);
+                }
+            }
+        });
     }
 
     @Override
     public void initData() {
         AppUpdateUtils.getInstance().update(mContext);
+    }
+
+    private void skipPage(View view, final String url) {
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                menu.toggle();
+                if (mWebView != null) {
+                    mWebView.loadUrl(url);
+                }
+            }
+        });
     }
 
     @Override
@@ -169,48 +233,6 @@ public class MainActivity extends BaseActivity {
         super.onStop();
     }
 
-    private class WebClient extends WebViewClient {
-
-        @Override
-        public void onPageStarted(WebView webView, String s, Bitmap bitmap) {
-            super.onPageStarted(webView, s, bitmap);
-            Log.d("test", "加载开始，当前url：" + s);
-            if (firstEnter) {
-                mEmptyLayout.show(RxEmptyLayout.NETWORK_LOADING);
-            }
-        }
-
-        @Override
-        public void onPageFinished(WebView webView, String s) {
-            super.onPageFinished(webView, s);
-            Log.d("test", "加载结束");
-            if (firstEnter) {
-                firstEnter = false;
-                mEmptyLayout.hide();
-            }
-        }
-
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView webView, String s) {
-            return super.shouldOverrideUrlLoading(webView, s);
-        }
-    }
-
-    private class JsFunction {
-        @JavascriptInterface
-        public void jsCallOC(final String str) {
-            runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (!TextUtils.isEmpty(str)) {
-                        Log.e("test", "js交互：" + str);
-                        JsDataParse.parse(mContext, str);
-                    }
-                }
-            });
-        }
-    }
 
     private void initLocation() {
         locationService = ((AhometApplication) getApplication()).locationService;
@@ -220,105 +242,106 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(MessageEvent event) {
-        if (event == null || event.message == null) {
+        if (event == null) {
             return;
         }
-        if ("needGps".equals(event.message)) {
+        if (MessageEvent.NEED_GPS.equals(event.message)) {
             checkPermissions(needPermissions);
-        } else if ("login".equals(event.message)) {
-
-        } else if ("logout".equals(event.message)) {
-
-        } else if (mWebView != null) {
-            //mWebView.clearHistory();
-            mWebView.loadUrl(event.message);
+        } else if (MessageEvent.UPDATE_LOGIN_STATUS.equals(event.message)) {
+            getUserInfoByToken();
+        } else if (MessageEvent.SHOW_NAV_BAR.equals(event.message)) {
+            mllNavBar.setVisibility(View.VISIBLE);
+        } else if (MessageEvent.HIDE_NAV_BAR.equals(event.message)) {
+            mllNavBar.setVisibility(View.GONE);
+        } else if (MessageEvent.OPEN_MENU.equals(event.message)) {
+            if (menu != null) {
+                menu.showMenu();
+            }
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventNavIndex(NavIndexEvent event) {
+        if (event != null && mNavBar != null) {
+            mNavBar.select(event.navIndex);
+        }
+    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);//完成回调
-        if (requestCode == PictureConfig.CHOOSE_REQUEST) {
-            if (resultCode == RESULT_OK) {   // 有选择结果
-                List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
-                if (selectList != null && selectList.size() > 0) {
-                    //针对5.0以上, 以下区分处理方法
-                    Uri uri = RxFileTool.getMediaUriFromPath(mContext, selectList.get(0).getPath());
-                    if (mUploadCallbackBelow != null) {
-                        chooseBelow(uri);
-                    } else if (mUploadCallbackAboveL != null) {
-                        chooseAbove(uri);
-                    } else {
-                        showToast("发生错误");
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventSkipUrl(SkipUrlEvent event) {
+        if (event != null && event.url != null && mWebView != null) {
+            mWebView.loadUrl(event.url);
+        }
+    }
+
+    private void getUserInfoByToken() {
+        OkGo.<AMBaseDto<User>>get(Constants.getUserModelUrl)
+                //.cacheMode(CacheMode.FIRST_CACHE_THEN_REQUEST)  //缓存模式先使用缓存,然后使用网络数据
+                .tag(mContext)
+                .params("token", UserCache.getToken(mContext))
+                .execute(new NewsCallback<AMBaseDto<User>>() {
+                    @Override
+                    public void onStart(Request<AMBaseDto<User>, ? extends Request> request) {
+                        super.onStart(request);
                     }
+
+                    @Override
+                    public void onSuccess(Response<AMBaseDto<User>> response) {
+                        if (response.body().code == 0) {
+                            UserCache.update(mContext, response.body().data);
+                            // 设置极光推送别名
+                            JpushUtils.setJpushAlias(mContext, response.body().data.getPhone_num());
+                        } else {
+                            UserCache.clear(mContext);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<AMBaseDto<User>> response) {
+                        super.onError(response);
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        super.onFinish();
+                        changeMenuLoginStatus();
+                    }
+                });
+    }
+
+    private void changeMenuLoginStatus() {
+        if (UserCache.isUserLogin(mContext)) {
+            mLlMenuMine.setVisibility(View.VISIBLE);
+            mLlMenuOrder.setVisibility(View.VISIBLE);
+            mLlMenuCollect.setVisibility(View.VISIBLE);
+
+            User mUser = UserCache.user(mContext);
+            if (mUser != null) {
+                RxGlideTool.loadImageView(mContext, Constants.MAIN_ENGINE + mUser.getHead_pic(), mIvAvatar, R.drawable.ic_avatar_default);
+                mTvUserName.setText(mUser.getNickname());
+                if (mUser.getIs_member() == 1) {
+                    if (mUser.getMember_end_time() != null && !"".equals(mUser.getMember_end_time())) {
+                        mTvMemberExpirationDate.setText(
+                                ("到期时间：" + RxTimeTool.stringFormat(mUser.getMember_end_time(), new SimpleDateFormat("yyyy.MM.dd"))));
+                    }
+                } else {
+                    mTvMemberExpirationDate.setVisibility(View.GONE);
                 }
-            } else {  // 没有选择结果，关闭回调
-                cancelFilePathCallback();
+                mTvLoginStatus.setText("退出登录");
             }
-        }
-    }
 
-    private void takePhoto() {
-        String[] items = {"从相册选择", "取消"};
-        AlertDialog.Builder mDialog = new AlertDialog.Builder(this).setCancelable(false).setItems(items, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-                if (i == 0) {
-                    PictureSelector.create(MainActivity.this)
-                            .openGallery(PictureMimeType.ofImage())
-                            .maxSelectNum(1)
-                            .forResult(PictureConfig.CHOOSE_REQUEST);
-                } else if (i == 1) {
-                    cancelFilePathCallback();
-                }
-            }
-        });
-        mDialog.create().show();
-    }
-
-    /**
-     * Android API >= 21(Android 5.0) 版本的回调处理
-     */
-    private void chooseAbove(Uri uri) {
-        if (uri != null) {
-            // 这里是针对从文件中选图片的处理, 区别是一个返回的URI, 一个是URI[]
-            Uri[] results;
-            results = new Uri[]{uri};
-            mUploadCallbackAboveL.onReceiveValue(results);
         } else {
-            mUploadCallbackAboveL.onReceiveValue(null);
+            mLlMenuMine.setVisibility(View.GONE);
+            mLlMenuOrder.setVisibility(View.GONE);
+            mLlMenuCollect.setVisibility(View.GONE);
+
+            mIvAvatar.setImageResource(R.drawable.ic_avatar_default);
+            mTvUserName.setText("未登录");
+            mTvMemberExpirationDate.setVisibility(View.GONE);
+            mTvLoginStatus.setText("注册、登录");
         }
-        mUploadCallbackAboveL = null;
     }
 
-    /**
-     * Android API < 21(Android 5.0)版本的回调处理
-     */
-    private void chooseBelow(Uri uri) {
-        if (uri != null) {
-            // 这里是针对文件路径处理
-            mUploadCallbackBelow.onReceiveValue(uri);
-        } else {
-            mUploadCallbackBelow.onReceiveValue(null);
-        }
-        mUploadCallbackBelow = null;
-    }
-
-    /**
-     * 取消回调，目的：第二次点击可打开
-     */
-    private void cancelFilePathCallback() {
-        if (mUploadCallbackAboveL != null) {
-            mUploadCallbackAboveL.onReceiveValue(null);
-            mUploadCallbackAboveL = null;
-        } else if (mUploadCallbackBelow != null) {
-            mUploadCallbackBelow.onReceiveValue(null);
-            mUploadCallbackBelow = null;
-        }
-    }
 
     /*****
      *
@@ -356,18 +379,20 @@ public class MainActivity extends BaseActivity {
 
                     //UserAgentBuilder.setAddressInfo(addressInfo);
                     UserAgentBuilder.setAddressInfo(sb.toString());
-                    WebSettings webSettings = mWebView.getSettings();
-                    String userAgent = webSettings.getUserAgentString();
-                    if (userAgent != null) {
-                        if (userAgent.indexOf("[") > 0) {
-                            String subString = userAgent.substring(userAgent.indexOf("["), userAgent.length());
-                            userAgent = userAgent.replace("ahometandroid" + subString, UserAgentBuilder.ua());
-                        } else {
-                            userAgent = userAgent.replace("ahometandroid", UserAgentBuilder.ua());
+                    if (mWebView != null) {
+                        WebSettings webSettings = mWebView.getSettings();
+                        String userAgent = webSettings.getUserAgentString();
+                        if (userAgent != null) {
+                            if (userAgent.indexOf("[") > 0) {
+                                String subString = userAgent.substring(userAgent.indexOf("["), userAgent.length());
+                                userAgent = userAgent.replace("ahometandroid" + subString, UserAgentBuilder.ua());
+                            } else {
+                                userAgent = userAgent.replace("ahometandroid", UserAgentBuilder.ua());
+                            }
                         }
+                        webSettings.setUserAgentString(userAgent);
+                        Log.e("test", "定位成功，设置UserAgent：" + webSettings.getUserAgentString());
                     }
-                    webSettings.setUserAgentString(userAgent);
-                    Log.e("test", "定位成功，设置UserAgent：" + webSettings.getUserAgentString());
                 }
             }
         }
@@ -466,8 +491,40 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);//完成回调
+    }
+
+    @Override
+    public void onTabSelected(NavigationButton navigationButton) {
+
+//        MainPageFragment fragment = mNavBar.getMainPageFragemnt();
+//        if (fragment != null && fragment.getWebView() != null) {
+//            showToast("xxx");
+//            mWebView = fragment.getWebView();
+//        }
+
+//        final MainPageFragment fragment = (MainPageFragment) navigationButton.getFragment();
+//        new Handler().postDelayed(new Runnable() {  // 创建Fragment提交事务是异步，需延迟获取
+//            @Override
+//            public void run() {
+//                if (fragment != null && fragment.getWebView() != null) {
+//                    mWebView = fragment.getWebView();
+//                    Log.d("test", mWebView.getX5WebViewExtension() != null ? "X5内核" : "不是 X5内核");
+//                }
+//            }
+//        }, 200);
+
+    }
+
+    @Override
+    public void onTabReselected(NavigationButton navigationButton) {
+    }
+
+    @Override
     public void onBackPressed() {
-        if (mWebView.canGoBack()) {
+        if (mWebView != null && mWebView.canGoBack()) {
             OkGo.getInstance().cancelTag(mContext);  // 防止内存溢出，关闭当前页面时，防止有分享，登录等等一些网络操作
             mWebView.goBack();
             return;
@@ -484,27 +541,8 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        if (mWebView != null) {
-            try {
-                ViewGroup parent = (ViewGroup) mWebView.getParent();
-                if (parent != null) {
-                    parent.removeView(mWebView);
-                }
-                mWebView.removeAllViews();
-                mWebView.destroy();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
         UMShareAPI.get(this).release();
         EventBus.getDefault().unregister(this);
         super.onDestroy();
-    }
-
-    public static void newInstance(Context context, String url) {
-        Intent i = new Intent(context, MainActivity.class);
-        i.putExtra("url", url);
-        context.startActivity(i);
     }
 }

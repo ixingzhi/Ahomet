@@ -11,7 +11,7 @@ import com.shichuang.ahomet.R;
 import com.shichuang.ahomet.common.Constants;
 import com.shichuang.ahomet.common.NewsCallback;
 import com.shichuang.ahomet.entify.AMBaseDto;
-import com.shichuang.ahomet.entify.MessageEvent;
+import com.shichuang.ahomet.event.MessageEvent;
 import com.shichuang.ahomet.entify.WxMakeOrder;
 import com.shichuang.ahomet.entify.WxPay;
 import com.shichuang.ahomet.widget.payment.OnRequestListener;

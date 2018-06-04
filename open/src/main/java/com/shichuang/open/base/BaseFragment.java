@@ -10,10 +10,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.shichuang.open.tool.RxToastTool;
-import com.shichuang.open.widget.RxEmptyLayout;
 
 /**
  * Created by Administrator on 2017/10/26.
@@ -25,6 +23,7 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
 
     protected Context mContext;
     protected View mContentView;
+    protected LayoutInflater mInflater;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,28 +42,33 @@ public abstract class BaseFragment extends Fragment implements IBaseView {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        setRetainInstance(true);
-        mContentView = inflater.inflate(getLayoutId(), null);
-        Log.d(TAG, "onCreateView: ");
+        if (mContentView != null) {
+            ViewGroup viewGroup = (ViewGroup) mContentView.getParent();
+            if (viewGroup != null) {
+                viewGroup.removeView(mContentView);
+            }
+        } else {
+            mContentView = inflater.inflate(getLayoutId(), null);
+            mInflater = inflater;
+            initView(savedInstanceState, mContentView);
+            initEvent();
+            initData();
+        }
         return mContentView;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG, "onViewCreated: ");
+    public void onDetach() {
+        super.onDetach();
+        mContext = null;
     }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mContext = getActivity();
-        initView(savedInstanceState, mContentView);
-        initEvent();
-        initData();
-    }
-
 
     @Override
     public void onDestroyView() {

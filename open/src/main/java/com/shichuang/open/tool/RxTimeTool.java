@@ -260,6 +260,15 @@ public class RxTimeTool {
     }
 
     /**
+     * 时间字符串格式化，自定义类型
+     */
+    public static String stringFormat(String time, SimpleDateFormat format) {
+        Date date = string2Date(time);
+        return format.format(date);
+    }
+
+
+    /**
      * 将时间字符串转为Date类型
      * <p>格式为用户自定义</p>
      *

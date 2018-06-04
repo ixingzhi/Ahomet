@@ -6,6 +6,7 @@ import android.os.Vibrator;
 import android.support.multidex.MultiDex;
 
 import com.baidu.mapapi.SDKInitializer;
+import com.baidu.mobstat.StatService;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
@@ -42,6 +43,7 @@ public class AhometApplication extends BaseApplication {
         initDiDi();
         initJpush();
         initLocation();
+        initBaiDuStat();
     }
 
     private void initOKGO() {
@@ -58,7 +60,7 @@ public class AhometApplication extends BaseApplication {
         Config.DEBUG = true;
         UMShareAPI.get(this);
         PlatformConfig.setWeixin("wx1773b107a60f360b", "a9615d31c1f66ab3e670b17338b2cb58");
-        PlatformConfig.setQQZone("1106715992", "ktiI3MdTnoRRzIOC");
+        PlatformConfig.setQQZone("1105543666", "75cuUQ0EuKGqABhk");
         PlatformConfig.setSinaWeibo("2006352818", "cc508e298010aad2592c6cf10012da87", "http://www.creatrue.net");
     }
 
@@ -77,6 +79,16 @@ public class AhometApplication extends BaseApplication {
         locationService = new LocationService(getApplicationContext());
         mVibrator = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
         SDKInitializer.initialize(getApplicationContext());
+    }
+
+    private void initBaiDuStat() {
+        // 开启自动埋点统计，为保证所有页面都能准确统计，建议在Application中调用。
+        // 第三个参数：autoTrackWebview：
+        // 如果设置为true，则自动track所有webview；如果设置为false，则不自动track webview，
+        // 如需对webview进行统计，需要对特定webview调用trackWebView() 即可。
+        // 重要：如果有对webview设置过webchromeclient，则需要调用trackWebView() 接口将WebChromeClient对象传入，
+        // 否则开发者自定义的回调无法收到。
+        StatService.autoTrace(this, true, true);
     }
 
 

@@ -5,8 +5,8 @@ package com.shichuang.ahomet.common;
  */
 
 public interface Constants {
-    //String MAIN_ENGINE = "https://www.ahomet.com";
-    String MAIN_ENGINE = "http://139.196.231.53:8080";
+    String MAIN_ENGINE = "https://www.ahomet.com";
+    //String MAIN_ENGINE = "http://139.196.231.53:8080";
 
     String ALIPAY_APP_ID = "2016011401092710";
     String ALIPAY_PID = "2088301826965745";
@@ -18,8 +18,21 @@ public interface Constants {
     String WX_APP_ID = "";
     String WX_PRIVATE_KEY = "";
 
+    String homeUrl = MAIN_ENGINE + "/mobile/index";
+    String nearbyUrl = MAIN_ENGINE + "/mobile/nearby";
+    String memberUrl = MAIN_ENGINE + "/ahomet/member/goPayMember?type=2";
+    String mineUrl = MAIN_ENGINE + "/ahomet/personal/mobile/personel_index";
+    String loginUrl = MAIN_ENGINE + "/mobile/login_mobile";
+    String orderUrl = MAIN_ENGINE + "/ahomet/personal/mobile/personel_hotel_order";
+    String collectUrl = MAIN_ENGINE + "/ahomet/personal/mobile/my_follow_list";
+    String messageUrl = MAIN_ENGINE + "/mobile/message/mobile_message_list";
+    String logoutUrl = MAIN_ENGINE + "/mobile/login/logOut";
+    String feedbackUrl = MAIN_ENGINE + "/mobile/singlePage/mobile_feedback";
+    String serviceUrl = "https://kefu.easemob.com/webim/im.html?tenantId=25734";
 
-    String loginUrl = MAIN_ENGINE + "/mobile/login_move";
+
+    //String checkLoginUrl = MAIN_ENGINE + "/mobile/login_move";
+    String getUserModelUrl = MAIN_ENGINE + "/app/getUserModel";
     String oauthLoginUrl = MAIN_ENGINE + "/ahomet/oauthlogin/app/handler";
     String payResultUrl = MAIN_ENGINE + "/ahomet/personal/mobile/personel_hotel_order";
     String stepLoginUrl = MAIN_ENGINE + "/api/mobile/one_step_login";
@@ -27,7 +40,6 @@ public interface Constants {
     String appUpdateUrl = MAIN_ENGINE + "/download/update/android_d_ph";
     String wxMakeOrderUrl = MAIN_ENGINE + "/api/payment/weixinpay/app/makePreOrder";
 
-    String feedbackUrl = MAIN_ENGINE + "/mobile/singlePage/mobile_feedback";
     String functionIntroductionUrl = MAIN_ENGINE + "/mobile/singlePage/mobile_feature_list";
     String copyrightUrl = MAIN_ENGINE + "/mobile/singlePage/mobile_legal_notices";
     String privacyPolicyUrl = MAIN_ENGINE + "/mobile/singlePage/mobile_privacy_policy";
